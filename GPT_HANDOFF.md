@@ -1,30 +1,31 @@
-# Incremental review: packed v02 preparation
+# Incremental review: completed packed v02 Gate A
 
-- Review base: `29d58b69f4310880cecd45de879addf81755f1e6` (published v01 evidence).
-- Evidence/code head: `0d8cf814d2f1468134dab046a6e3a112c0621ff0`.
-- A later metadata-only commit adds this handoff; use the stable head above for the implementation and toy evidence.
+- Review base: `e416680ab43fcfe70ea42cddf4db85ca98133fef` (published packed preparation).
+- Evidence head: `e6b164aa29c0049d9f927181b41d439f64ed5ad7`.
+- Runtime source commit: `85e4c38f8084ca5b93c60f2540b332826c898624`; operator and protocol bytes match the preparation code.
+- A later metadata-only commit updates this handoff; keep the evidence head above stable.
 
 ## Changed and unchanged claims
 
-**Unchanged:** v01 source, protocol and canonical result bytes; padded cross-configuration `PROTOTYPE_NO_GO`; hybrid/128 `NUMERICAL_UNQUALIFIED`; no RL, optimizer, full-model backward or end-to-end speedup evidence.
+**Unchanged:** v01 source, protocol and canonical result bytes; padded cross-configuration `PROTOTYPE_NO_GO`; hybrid/128 `NUMERICAL_UNQUALIFIED`; packed operator/protocol and initial toy evidence; no RL, optimizer, full-model backward or end-to-end evidence.
 
-**Added:** real packed edge processing with full dense dW; independent CPU FP32 and CUDA BF16 toy checks PASS; a separately frozen Gate A replay plan. The real-model v02 numerical and performance endpoints remain **NOT_RUN**.
+**Changed:** v02 execution moves from NOT_RUN to COMPLETE/exit 0. Both packed lanes pass numerical checks in both settings. Frozen Gate A verdict is **PACKED_RECIPE_NO_GO**: bounded512/128 conversion-inclusive packed is 0.482x versus dense and 0.671x versus padded; prepacked is 0.557x versus dense. Stop this PyTorch recipe.
 
-**Clarified:** the original bounded512/128 trace has 3,464 valid versus 65,536 padded slots. This motivates removing a measured quantity of redundant work, while its causal contribution to runtime remains unresolved. A numerical gate pass is empirical tolerance-based agreement, and the 2.129x result is a narrow descriptive positive.
+**New evidence:** exact saved inputs and model weight identities were verified; shared-GPU controls were remeasured. Chunked references fail and are excluded. Packed peak allocation is about 555 MiB below padded at bounded512, but 278 MiB above dense. These are descriptive operator measurements on the same eight diagnostic trajectories.
 
 ## Minimal reading order
 
-1. [PACKED_V02.md](PACKED_V02.md): operator, costs, controlled comparison and stopping rule.
-2. [packed_head.py](scripts/packed_head.py), then [check_packed.py](scripts/check_packed.py).
-3. [Gate A protocol](protocols/qwen15b_v02_gateA.json), then [qualify_packed.py](scripts/qualify_packed.py).
-4. [Toy checks](evidence/packed_v02_toy/checks.json). Run `python scripts/verify_public.py` for source/evidence integrity.
+1. [New result table](evidence/qwen15b_packed_gateA_v02/RESULTS.md) and [provenance](evidence/qwen15b_packed_gateA_v02/provenance.json).
+2. [New canonical summary](evidence/qwen15b_packed_gateA_v02/summary.json): numerical gates, qualified timings, raw technical repeats and allocation peaks.
+3. [RESULTS.md](RESULTS.md): revised interpretation and preserved v01 result.
+4. [PACKED_V02.md](PACKED_V02.md) only for scope and stopping criteria. Run `python scripts/verify_public.py` for source/evidence integrity.
 
-Read [RESULTS.md](RESULTS.md) only for the revised interpretation. The original large trace tensors and logs are unnecessary for this code review and remain excluded from Git. The v01 evidence files need rereading only when checking a disputed original number.
+The packed implementation and protocol are unchanged; they need rereading only for a specific disputed mechanism. Large trace tensors, private launch receipts and logs remain excluded. The v01 and toy evidence need rereading only when checking a disputed original number.
 
 ## Reviewer questions and next decision
 
-1. Does edge packing preserve support/action mapping and the complete dense dW contract, including tied-weight scope?
-2. Is conversion-inclusive wall time a fair primary metric, with prepacked time and the v01 adapter's unused entropy-placeholder cost clearly labeled?
-3. Does the planned bounded512 endpoint isolate a useful implementation decision without promoting a marginal shared-GPU >1.0x result into a general claim?
+1. Are numerical exclusions, speedup arithmetic and the frozen Gate A verdict consistent with the saved artifacts?
+2. Does the result justify stopping this PyTorch recipe with full dense dW and conversion charged in the primary lane?
+3. Are shared-GPU timing and reused-trajectory limitations sufficient to keep the negative conclusion within this implementation's scope?
 
-The next empirical decision is the fixed 1.5B Gate A replay. Failure stops this packed PyTorch recipe. Optimizer integration and hybrid repair require separate questions and protocols.
+No additional run or hidden tuning sweep follows this failure. Optimizer integration, hybrid repair and a fused kernel would require separate questions and protocols.
