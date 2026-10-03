@@ -19,12 +19,13 @@ The output-head gradient outside the fixed support is zero for this loss term. T
 - Hybrid 32-position arms: numerical PASS, measured slowdown.
 - Hybrid 128-position arms: NUMERICAL_UNQUALIFIED; not timed.
 - Chunked 128-position references: NUMERICAL_UNQUALIFIED.
+- Packed v02: IMPLEMENTED; toy CPU FP32/CUDA BF16 checks PASS; 1.5B replay and Gate A NOT_RUN.
 - Full-model backward, optimizer updates, RL quality, production trace validation and end-to-end throughput: NOT_RUN.
 - Independent scientific units: eight authored diagnostic prompt trajectories; timing repetitions are technical repeats. No statistical generalization claim.
 
 ## Variants and code map
 
-All implementation symbols below are in `scripts/qualify.py`.
+The v01 implementation symbols below are in the unchanged `scripts/qualify.py`.
 
 | Symbol/mode | Meaning |
 |---|---|
@@ -41,6 +42,8 @@ Support-only is compared with the faster numerically qualified `dense_lp`/`chunk
 
 Numerical tolerance is fixed in the protocol (max logprob absolute error 0.05; relative gradient L2 error 0.02). Passing is not a general proof or a bitwise equivalence guarantee.
 
+Packed v02 uses `scripts/packed_head.py`: `pack_support` creates valid edge IDs, row IDs, row offsets and action-edge positions; `_PackedSupportHead` computes selected BMM logits, segmented normalization and FP32 accumulation into full dense dW. `scripts/check_packed.py` compares against native dense autograd, including interspersed padding, repeated IDs across rows and singleton support. `scripts/qualify_packed.py` replays hash-bound v01 inputs and remeasures qualified dense, padded and packed variants. Conversion-inclusive synchronized wall time is primary; prepacked and CUDA-event time are secondary. Details: `PACKED_V02.md`.
+
 ## Evidence route
 
 Read `RESULTS.md`, then `evidence/qwen15b_v01/summary.json`. `provenance.json` binds the exported runner, protocol and original result summary by SHA256 and records non-identifying software/hardware metadata. `sanity.json` is the algebra check from the formal run. `model.json` records the verified model revision and authored prompts. Do not start with generated trace tensors: they are not included.
@@ -49,7 +52,7 @@ Read `RESULTS.md`, then `evidence/qwen15b_v01/summary.json`. `provenance.json` b
 
 1. Are the baseline and candidate tasks matched, especially entropy and gradient-buffer costs?
 2. Is the hybrid forward/backward numerical inconsistency adequately isolated before any performance claim?
-3. Would packed/segmented supports remove enough gather/index overhead to justify a new qualification, without relaxing this run's gate?
+3. Does the conversion-inclusive packed implementation remove enough work to pass its separately specified Gate A, while preserving full dense dW and the v01 verdict?
 4. What stronger optimized baseline is needed before extrapolating the narrow small-support positive result?
 
-No fixes or reruns were performed after observing the frozen negative result. This repository is the initial evidence delivery, so there is no incremental review base yet.
+The initial v01 evidence remains frozen. An implementation follow-up and toy checks were added after review; the real-model rerun is pending. Use `GPT_HANDOFF.md` for the incremental reading route.

@@ -1,0 +1,68 @@
+{
+  "scope": "Small numerical and input-contract checks only; no real-model timing",
+  "real_model_gate": "NOT_RUN",
+  "source_sha256": {
+    "scripts/packed_head.py": "37425c030a464a539b1e771aa9109aac491186c3b659b3eeea5fbebdd042bd5b",
+    "scripts/check_packed.py": "0b3ef066602b45a34bf6d706a93fe77d83a8c24d71373892ab6fe8043059b03a",
+    "scripts/qualify_packed.py": "6272bac8d9e009ebf18962190a48f217dcefb61986245ca774e420c700d5d016",
+    "protocols/qwen15b_v02_gateA.json": "e8367e81654f19ea5f029a7a5c7aef456387cf3ea5d51644a07e411161d7687d"
+  },
+  "checks": {
+    "cpu_fp32": {
+      "status": "PASS",
+      "scope": "toy numerical/input-contract check only",
+      "device": "cpu",
+      "dtype": "torch.float32",
+      "torch": "2.5.1",
+      "active_pairs": 17,
+      "padded_pairs": 30,
+      "errors": {
+        "logprob": {
+          "max_abs": 2.384185791015625e-07,
+          "relative_l2": 1.653688208591575e-08
+        },
+        "dh": {
+          "max_abs": 9.5367431640625e-07,
+          "relative_l2": 8.883974089712865e-08
+        },
+        "dw": {
+          "max_abs": 4.76837158203125e-07,
+          "relative_l2": 6.979668398798822e-08
+        }
+      },
+      "invalid_cases_rejected": 4,
+      "dense_dw_shape": [
+        43,
+        16
+      ]
+    },
+    "cuda_bf16": {
+      "status": "PASS",
+      "scope": "toy numerical/input-contract check only",
+      "device": "cuda",
+      "dtype": "torch.bfloat16",
+      "torch": "2.5.1",
+      "active_pairs": 17,
+      "padded_pairs": 30,
+      "errors": {
+        "logprob": {
+          "max_abs": 2.3707980290055275e-07,
+          "relative_l2": 1.5489172611182767e-08
+        },
+        "dh": {
+          "max_abs": 9.5367431640625e-07,
+          "relative_l2": 1.5754908133658319e-07
+        },
+        "dw": {
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 7.154472996262484e-07
+        }
+      },
+      "invalid_cases_rejected": 4,
+      "dense_dw_shape": [
+        43,
+        16
+      ]
+    }
+  }
+}

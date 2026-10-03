@@ -30,4 +30,18 @@ assert s["verdict"]["sparse"] == "PROTOTYPE_NO_GO"
 assert all(not a["correctness"]["hybrid"]["pass"] for a in endpoints)
 for arm in json.loads((evidence / "sanity.json").read_text()).values():
     assert all(item["max_abs"] < 5e-5 for item in arm.values())
-print("PASS: evidence hashes, syntax, speedups, numerical exclusions and frozen no-go gate")
+packed = json.loads((root / "evidence/packed_v02_toy/checks.json").read_text())
+assert packed["real_model_gate"] == "NOT_RUN"
+for relative, expected in packed["source_sha256"].items():
+    assert hashlib.sha256((root / relative).read_bytes()).hexdigest() == expected, relative
+for name, check in packed["checks"].items():
+    assert check["status"] == "PASS" and check["active_pairs"] == 17
+    assert check["dense_dw_shape"] == [43, 16] and check["invalid_cases_rejected"] == 4
+    for metric, value in check["errors"].items():
+        if name == "cpu_fp32":
+            assert value["max_abs"] < 5e-5
+        elif metric == "logprob":
+            assert value["max_abs"] <= 0.05
+        else:
+            assert value["relative_l2"] <= 0.02
+print("PASS: frozen v01 integrity and no-go; packed v02 source-bound toy checks; real-model gate NOT_RUN")

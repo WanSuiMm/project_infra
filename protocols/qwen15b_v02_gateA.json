@@ -1,0 +1,29 @@
+{
+  "question": "Does removing padded support work make the bounded512 head profitable while retaining full dense dW?",
+  "stage": "Gate A: packed implementation qualification; prepared, real-model replay not run",
+  "model": "Qwen2.5-1.5B-Instruct",
+  "revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "seed": 20261003,
+  "dtype": "bfloat16",
+  "rows": [128],
+  "vocab_chunk": 8192,
+  "v01_reference": {
+    "runner_sha256": "7437daaa4b9331adc264bbb5c9701a24c30bb3a539d285291eadcf41e948df07",
+    "summary_sha256": "47316f665069507b473aa9071e01fa25be1a532beec6b0ceec207bca77423cbc",
+    "model_assets_sha256": "5d96a3f883ece7ce9ed00220cae4a8d826653d3142eb9355085c17586e67c44f"
+  },
+  "traces": [
+    {"file": "model_default_trace.pt", "name": "model_default", "temperature": 0.7, "sha256": "45472200d134a87f86f47d77cc729cf8aa0b09ad9fa22194b801d1db01b5e492"},
+    {"file": "bounded512_trace.pt", "name": "bounded512", "temperature": 0.7, "sha256": "9ca914e58fcb9e9d78c3e5b4e0c1560791b66bdc17d4f1ef26c6d5ee0bbde3e0"}
+  ],
+  "timing": {"warmup": 2, "paired_rounds": 5, "iterations_per_round": 3},
+  "correctness": {"logprob_max_abs": 0.05, "gradient_relative_l2": 0.02},
+  "intervention": "Flatten only valid support entries. Recompute the same selected BMM logits in backward; retain FP32 gradient accumulation and full dense dW output.",
+  "controls": "Remeasure frozen v01 padded sparse and dense_lp/chunked_lp on identical saved h, support, actions, coefficient vector, dtype and temperature. Only numerically qualified baselines may enter the comparison.",
+  "primary_metric": "Synchronized wall-clock F+B milliseconds for packed_from_padded, including GPU packing, allocation, full dW zeroing and accumulation, versus the faster numerically qualified dense logprob baseline.",
+  "secondary_metrics": "CUDA-event milliseconds, prepacked F+B time, packed-to-padded speedup, total and incremental peak allocated memory. Prepacking and input transfer are excluded only from the explicitly labeled prepacked lane.",
+  "gate": {"setting": "bounded512", "rows": 128, "speedup_strictly_greater_than": 1.0, "packed_over_padded_strictly_greater_than": 1.0},
+  "failure": "Numerical failure makes an arm unqualified and prevents timing it. Gate A needs both numerical PASS and the two strict speedup thresholds at bounded512/128. Stop this packed PyTorch recipe on failure; no hidden kernel sweep, model scale-up or optimizer redesign.",
+  "independent_unit": "The same eight authored diagnostic prompt trajectories as v01. Replaying them is an implementation comparison, not new independent scientific evidence; timing repeats remain technical repeats.",
+  "limits": "No entropy task, hybrid repair, sparse gradient representation, optimizer integration, full-model backward, RL, end-to-end speedup, novelty or general sparse-kernel no-go claim. Shared-GPU speedups, including a value just above 1, are descriptive and provisional. This new gate does not replace the v01 frozen >=1.10x cross-configuration gate."
+}
