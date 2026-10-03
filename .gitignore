@@ -1,0 +1,8 @@
+/runs/
+/scripts/launch_remote.py
+__pycache__/
+*.pyc
+*.pt
+*.safetensors
+*.log
+.venv/

@@ -1,0 +1,18 @@
+{
+  "run_id": "qwen15b_qualification_v01",
+  "execution": "COMPLETE",
+  "exit_code": 0,
+  "hardware": "NVIDIA GeForce RTX 5090",
+  "torch": "2.11.0+cu128",
+  "transformers": "5.8.1",
+  "python": "3.12",
+  "timing_conditions": "Shared GPU; technical repeats; no exclusivity or end-to-end throughput claim.",
+  "sha256": {
+    "scripts/qualify.py": "7437daaa4b9331adc264bbb5c9701a24c30bb3a539d285291eadcf41e948df07",
+    "protocols/qwen15b_v01.json": "e0eac452935596357f5a95afa21915e4bf73d8afdc7ad8a99461d895888a4ac5",
+    "evidence/qwen15b_v01/summary.json": "47316f665069507b473aa9071e01fa25be1a532beec6b0ceec207bca77423cbc",
+    "evidence/qwen15b_v01/sanity.json": "377f3b85252b93fdc5d04c40e8e84a7c8cddb7e568efe183c43bc0be2707ffdc",
+    "evidence/qwen15b_v01/model.json": "e2455a8781e51b78b6a2cb6424753b2b263cc01752dc526c92e43bd00038e06b"
+  },
+  "excluded": "Private host/PID/device ordinal, launch receipts, absolute paths, logs, generated trace tensors and model weights."
+}

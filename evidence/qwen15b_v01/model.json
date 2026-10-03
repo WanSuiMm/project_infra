@@ -1,0 +1,18 @@
+{
+  "verified_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "model_type": "qwen2",
+  "vocab": 151936,
+  "hidden": 1536,
+  "tie_word_embeddings": true,
+  "prompts": [
+    "Solve and explain: a train travels 180 km in 3 hours. What is its average speed?",
+    "Find all real roots of x squared minus five x plus six equals zero.",
+    "Write a Python function that removes duplicates while preserving order.",
+    "Explain why binary search needs a sorted input, with a short example.",
+    "Explain the difference between evaporation and boiling in plain language.",
+    "Translate into Chinese: Reliable experiments preserve negative results.",
+    "A shop discounts a 240 dollar item by 15 percent. Calculate its new price.",
+    "Give three practical steps to diagnose a program that unexpectedly uses too much memory."
+  ],
+  "post_eos": "Post-EOS hidden/support positions excluded from benchmark; full diagnostic token sequences retained. Not a production RL rollout bank."
+}

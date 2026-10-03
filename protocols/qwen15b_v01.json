@@ -1,0 +1,17 @@
+{
+  "question": "Can fixed sampling supports accelerate an equivalent 1.5B LM-head forward/backward task?",
+  "model": "Qwen2.5-1.5B-Instruct",
+  "revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "seed": 20261003,
+  "dtype": "bfloat16",
+  "trace_steps": 32,
+  "sampling": [{"name": "model_default", "temperature": 0.7, "top_k": 20, "top_p": 0.8}, {"name": "bounded512", "temperature": 0.7, "top_k": 512, "top_p": 0.95}],
+  "rows": [32, 128],
+  "vocab_chunk": 8192,
+  "timing": {"warmup": 2, "paired_rounds": 5, "iterations_per_round": 3},
+  "correctness": {"logprob_max_abs": 0.05, "gradient_relative_l2": 0.02, "entropy_max_abs": 0.05},
+  "primary_metric": "paired median forward-plus-backward milliseconds against the faster matched dense/chunked baseline",
+  "failure": "Stop timing an arm on numerical failure. Prototype performance pass requires at least 1.10x on 128 real rows for both sampling configurations; shared-GPU results remain provisional.",
+  "independent_unit": "Each generated prompt trajectory; timing repeats are technical repeats, not independent scientific samples.",
+  "limits": "Operator qualification only: no end-to-end RL speedup, new objective, novelty or training-quality claim. Model weights and hidden inputs are BF16; softmax statistics and sparse gradient accumulation use FP32. Optimizer cost excluded equally."
+}
