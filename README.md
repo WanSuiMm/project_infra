@@ -1,12 +1,12 @@
 # Support-sparse LM head: a bounded qualification
 
-Can an already-required rollout sampling support eliminate output-layer work while preserving the fixed-support logprob objective? The completed Qwen2.5-1.5B-Instruct **padded v01** passed all four numerical checks but failed its frozen performance gate: **2.129x** / **0.805x** at 128 positions for the small/broader support configurations. A **packed v02** now processes only valid support entries and retains full dense dW. Its toy checks pass; its real-model performance gate is **NOT_RUN**. Hybrid preserving full-vocabulary entropy was numerically unqualified at 128 positions. No RL training or end-to-end speedup was measured.
+Can an already-required rollout sampling support eliminate output-layer work while preserving the fixed-support logprob objective? The completed Qwen2.5-1.5B-Instruct **padded v01** passed all four numerical checks but failed its frozen performance gate: **2.129x** / **0.805x** at 128 positions for the small/broader support configurations. **Packed v02** also passed numerical checks but failed Gate A: at bounded512/128, conversion-inclusive and prepacked speedups were **0.482x** and **0.557x** versus dense. Both retain full dense dW. These are shared-GPU operator measurements. Hybrid preserving full-vocabulary entropy was numerically unqualified at 128 positions. No RL training or end-to-end speedup was measured.
 
 Start here:
 
 1. [RESULTS.md](RESULTS.md): measured results, negative outcomes and limitations.
 2. [GPT_HANDOFF.md](GPT_HANDOFF.md): incremental changes since the published v01 evidence.
-3. [GPT_CONTEXT.md](GPT_CONTEXT.md) and [PACKED_V02.md](PACKED_V02.md): task, code map and prepared Gate A.
+3. [GPT_CONTEXT.md](GPT_CONTEXT.md) and [PACKED_V02.md](PACKED_V02.md): task, code map and completed Gate A.
 4. [Canonical numerical evidence](evidence/qwen15b_v01/summary.json), only when checking individual errors or timings. No large logs or model files are required for review.
 
 ## Reproduce
@@ -39,4 +39,4 @@ python scripts/check_packed.py
 python scripts/check_packed.py --device cuda --dtype bfloat16
 ```
 
-The recorded toy checks used PyTorch 2.5.1 and an RTX 4060 Laptop GPU; they do not qualify the 1.5B workload. [Gate A](protocols/qwen15b_v02_gateA.json) prepares a replay of the exact saved v01 traces, with packing included in the primary timing and prepacked timing reported separately. See [PACKED_V02.md](PACKED_V02.md) for the command and stop criteria. Frozen trace tensors are retained locally and excluded from this repository; exact replay requires those files. A fresh reproduction must freeze its own trace hashes in a separate protocol before timing.
+The initial toy checks used PyTorch 2.5.1 and an RTX 4060 Laptop GPU. The completed [Gate A results](evidence/qwen15b_packed_gateA_v02/RESULTS.md) replay the exact saved v01 traces on the original RTX 5090 environment, with packing included in the primary timing and prepacked timing reported separately. The frozen verdict is `PACKED_RECIPE_NO_GO`; this recipe stops here. See [PACKED_V02.md](PACKED_V02.md) for the command and scope. Frozen trace tensors are retained locally and excluded from this repository; exact replay requires those files. A fresh reproduction must freeze its own trace hashes and asset receipt in a separate protocol before timing.

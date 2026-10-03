@@ -1,6 +1,6 @@
-# Packed support: prepared Gate A
+# Packed support: Gate A
 
-The v01 result evaluates one padded PyTorch implementation. Its failure leaves a specific unresolved question: can removing padded projection/gradient work make bounded512 profitable with the same full dense dW output? The packed implementation and toy checks are complete. **The 1.5B replay has not run.**
+The v01 result evaluates one padded PyTorch implementation. Gate A asks whether removing padded projection/gradient work makes bounded512 profitable with the same full dense dW output. **The 1.5B replay is complete: numerical PASS, PACKED_RECIPE_NO_GO.** Conversion-inclusive and prepacked bounded512 speedups are 0.482x/0.557x versus dense. The canonical [result table](evidence/qwen15b_packed_gateA_v02/RESULTS.md) preserves this negative outcome; this recipe stops here.
 
 ## Operator and code map
 
@@ -49,7 +49,7 @@ CUDA_VISIBLE_DEVICES=0 HF_HUB_OFFLINE=1 python scripts/qualify_packed.py \
   --protocol protocols/qwen15b_v02_gateA.json \
   --trace-dir runs/qwen15b_qualification_v01 \
   --model-dir /your/model/cache/snapshots/989aa7980e4cf806f80c7fef2b1adb7bc71aa306 \
-  --output runs/qwen15b_packed_gateA_v02
+  --output runs/new_packed_gateA_reproduction
 ```
 
-The frozen traces and original `model_assets.json` are private local experiment artifacts and are excluded from Git. Exact replay requires those files. For a fresh reproduction, collect traces with the unchanged v01 runner, then freeze their hashes and model asset receipt hash in a new protocol before using the replay runner. Do not change this protocol after seeing timing results. The recorded toy check used PyTorch 2.5.1; the planned real-model replay uses the registered v01 environment, PyTorch 2.11.0+cu128 / Transformers 5.8.1. Private host/PID/device/command receipts stay under the ignored output directory.
+The frozen traces and original `model_assets.json` are private local experiment artifacts and are excluded from Git. Exact replay requires those files. For a fresh reproduction, collect traces with the unchanged v01 runner, then freeze their hashes and model asset receipt hash in a new protocol before using the replay runner. Do not change this protocol after seeing timing results. The initial toy check used PyTorch 2.5.1; the completed replay used the registered v01 environment, PyTorch 2.11.0+cu128 / Transformers 5.8.1. Private host/PID/device/command receipts stay under the ignored output directory. The protocol's preparation-stage description is frozen; result provenance records current execution status.

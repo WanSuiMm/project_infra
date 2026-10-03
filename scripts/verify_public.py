@@ -44,4 +44,24 @@ for name, check in packed["checks"].items():
             assert value["max_abs"] <= 0.05
         else:
             assert value["relative_l2"] <= 0.02
-print("PASS: frozen v01 integrity and no-go; packed v02 source-bound toy checks; real-model gate NOT_RUN")
+v02_path = root / "evidence/qwen15b_packed_gateA_v02"
+v02_provenance = json.loads((v02_path / "provenance.json").read_text())
+assert v02_provenance["execution"] == "COMPLETE" and v02_provenance["exit_code"] == 0
+for relative, expected in v02_provenance["sha256"].items():
+    assert hashlib.sha256((root / relative).read_bytes()).hexdigest() == expected, relative
+v02 = json.loads((v02_path / "summary.json").read_text())
+assert len(v02["arms"]) == 2
+for arm in v02["arms"]:
+    assert arm["rows"] == 128
+    assert all(arm["correctness"][mode]["pass"] for mode in ("padded", "packed_from_padded", "packed_prepacked"))
+    times = arm["timings"]
+    base = min(times[m]["median_wall_ms"] for m in ("dense_lp", "chunked_lp") if m in times)
+    for mode, ratio in arm["speedups"].items():
+        assert math.isclose(ratio, base / times[mode]["median_wall_ms"], rel_tol=1e-12)
+    for mode, check in arm["correctness"].items():
+        if not check["pass"]:
+            assert mode not in times
+endpoint = next(a for a in v02["arms"] if a["setting"] == "bounded512")
+assert endpoint["speedups"]["packed_from_padded"] < 1 and endpoint["packed_over_padded"] < 1
+assert v02["verdict"] == "PACKED_RECIPE_NO_GO"
+print("PASS: frozen v01 and v02 integrity, numerical exclusions, speedups and both no-go verdicts")

@@ -19,7 +19,7 @@ The output-head gradient outside the fixed support is zero for this loss term. T
 - Hybrid 32-position arms: numerical PASS, measured slowdown.
 - Hybrid 128-position arms: NUMERICAL_UNQUALIFIED; not timed.
 - Chunked 128-position references: NUMERICAL_UNQUALIFIED.
-- Packed v02: IMPLEMENTED; toy CPU FP32/CUDA BF16 checks PASS; 1.5B replay and Gate A NOT_RUN.
+- Packed v02: COMPLETE, exit code 0; both packed lanes numerical PASS at both 128-row settings; Gate A PACKED_RECIPE_NO_GO (bounded512 conversion-inclusive/prepacked 0.482x/0.557x versus dense). This recipe stops here.
 - Full-model backward, optimizer updates, RL quality, production trace validation and end-to-end throughput: NOT_RUN.
 - Independent scientific units: eight authored diagnostic prompt trajectories; timing repetitions are technical repeats. No statistical generalization claim.
 
@@ -48,11 +48,13 @@ Packed v02 uses `scripts/packed_head.py`: `pack_support` creates valid edge IDs,
 
 Read `RESULTS.md`, then `evidence/qwen15b_v01/summary.json`. `provenance.json` binds the exported runner, protocol and original result summary by SHA256 and records non-identifying software/hardware metadata. `sanity.json` is the algebra check from the formal run. `model.json` records the verified model revision and authored prompts. Do not start with generated trace tensors: they are not included.
 
+For the new decision, read `evidence/qwen15b_packed_gateA_v02/RESULTS.md`, then its `summary.json` and source-bound `provenance.json`. This preserves the completed negative packed result and its shared-GPU scope. The original protocol's preparation-stage field and initial toy record describe their creation time; actual execution status is in the new result provenance.
+
 ## Questions for the reviewer
 
 1. Are the baseline and candidate tasks matched, especially entropy and gradient-buffer costs?
 2. Is the hybrid forward/backward numerical inconsistency adequately isolated before any performance claim?
-3. Does the conversion-inclusive packed implementation remove enough work to pass its separately specified Gate A, while preserving full dense dW and the v01 verdict?
+3. Does the completed packed no-go support stopping this recipe while preserving the distinction between whole-implementation overhead and a general sparse-kernel impossibility claim?
 4. What stronger optimized baseline is needed before extrapolating the narrow small-support positive result?
 
-The initial v01 evidence remains frozen. An implementation follow-up and toy checks were added after review; the real-model rerun is pending. Use `GPT_HANDOFF.md` for the incremental reading route.
+The v01 and initial toy evidence remain frozen. The packed real-model replay is now complete and negative under Gate A. Use `GPT_HANDOFF.md` for the incremental reading route.

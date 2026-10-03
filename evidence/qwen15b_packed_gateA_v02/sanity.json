@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "scope": "toy numerical/input-contract check only",
+  "device": "cuda",
+  "dtype": "torch.float32",
+  "torch": "2.11.0+cu128",
+  "active_pairs": 17,
+  "padded_pairs": 30,
+  "errors": {
+    "logprob": {
+      "max_abs": 9.5367431640625e-07,
+      "relative_l2": 7.139932733934984e-08
+    },
+    "dh": {
+      "max_abs": 9.5367431640625e-07,
+      "relative_l2": 1.9712406640337576e-07
+    },
+    "dw": {
+      "max_abs": 7.152557373046875e-07,
+      "relative_l2": 1.9288539476747246e-07
+    }
+  },
+  "invalid_cases_rejected": 4,
+  "dense_dw_shape": [
+    43,
+    16
+  ]
+}

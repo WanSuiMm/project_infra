@@ -1,0 +1,23 @@
+{
+  "run_id": "qwen15b_packed_gateA_v02",
+  "execution": "COMPLETE",
+  "exit_code": 0,
+  "pid_verified_gone": true,
+  "source_commit": "85e4c38f8084ca5b93c60f2540b332826c898624",
+  "launch_utc": "2026-10-03T08:50:40.164861+00:00",
+  "finish_utc": "2026-10-03T08:50:49.371933+00:00",
+  "hardware": "NVIDIA GeForce RTX 5090",
+  "torch": "2.11.0+cu128",
+  "transformers": "5.8.1",
+  "timing_conditions": "Shared GPU; before-launch GPU utilization snapshot was 95 percent. No exclusive timing or statistical generalization claim.",
+  "sha256": {
+    "scripts/qualify.py": "7437daaa4b9331adc264bbb5c9701a24c30bb3a539d285291eadcf41e948df07",
+    "scripts/qualify_packed.py": "6272bac8d9e009ebf18962190a48f217dcefb61986245ca774e420c700d5d016",
+    "scripts/packed_head.py": "37425c030a464a539b1e771aa9109aac491186c3b659b3eeea5fbebdd042bd5b",
+    "scripts/check_packed.py": "0b3ef066602b45a34bf6d706a93fe77d83a8c24d71373892ab6fe8043059b03a",
+    "protocols/qwen15b_v02_gateA.json": "e8367e81654f19ea5f029a7a5c7aef456387cf3ea5d51644a07e411161d7687d",
+    "evidence/qwen15b_packed_gateA_v02/summary.json": "2c0bc688e1605992834e09ccdac92a69d9eccf766fc560a06fcd327c99dffda1",
+    "evidence/qwen15b_packed_gateA_v02/sanity.json": "f2dc3e6340571b9040d468e58620d62b6a4a009920e05e04b92e31d479db6ba4"
+  },
+  "excluded": "Host, PID, GPU ordinal, commands, absolute paths, model asset receipts and private launch records remain local."
+}
